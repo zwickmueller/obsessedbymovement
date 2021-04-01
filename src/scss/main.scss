@@ -1,0 +1,27 @@
+@import "./fonts.scss";
+@import "./variables.scss";
+@import "./resets.scss";
+@import "./mixins.scss";
+@import "./util.scss";
+@import "./columns.scss";
+
+a {
+  color: $color-link;
+  transition: color 0.3s;
+}
+
+a:active {
+  color: $color-link;
+}
+
+a:hover {
+  color: $color-link-hover;
+}
+
+body,
+html {
+  background: black;
+  font-family: $font-primary;
+}
+
+canvas {}

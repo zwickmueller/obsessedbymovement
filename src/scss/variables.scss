@@ -1,0 +1,17 @@
+/* COLORS */
+$font-primary: 'Monument Grotesk';
+$color-primary: purple;
+$color-secondary: lighten($color-primary,10%);
+$color-text: #f5f4f2; // $color-text: #f5f4f2;
+$color-text-inverted: #0b0909;
+$color-link: $color-primary;
+$color-link-hover: darken($color-link,20%);
+$color-background: black;
+$color-background-seconday: lighten($color-background, 25%);
+$font-family: Sans-Serif; /*
+
+COLUMNS AND RESPONSIVESNESS */
+$gap: 32px;
+$tablet: 769px;
+$desktop: 960px + (2 * $gap);
+$widescreen: 1152px + (2 * $gap);
