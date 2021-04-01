@@ -158,6 +158,7 @@ export default {
       this.audio.currentTime = parseInt(this.audio.duration * seekPos);
     },
     stop() {
+
       this.playing = false;
       this.audio.currentTime = 0;
     },
