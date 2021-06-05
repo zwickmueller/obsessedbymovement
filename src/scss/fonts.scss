@@ -4,3 +4,10 @@
   font-weight: 400;
   src: url("../assets/fonts/ABCMonumentGrotesk-Regular.woff2") format('woff2'), url("../assets/fonts/ABCMonumentGrotesk-Regular.woff") format('woff');
 }
+@font-face {
+  font-family: 'Nimbus Mono';
+  src: url("../assets/fonts/nimbus-roman-mono-m.eot");
+  src: url("../assets/fonts/nimbus-roman-mono-m.eot?#iefix") format('embedded-opentype'), url("../assets/fonts/nimbus-roman-mono-m.woff2") format('woff2'), url("../assets/fonts/nimbus-roman-mono-m.woff") format('woff'), url("../assets/fonts/nimbus-roman-mono-m.ttf") format('truetype'), url("../assets/fonts/nimbus-roman-mono-m.svg#youworkforthem") format('svg');
+  font-weight: normal;
+  font-style: normal;
+}

@@ -1,0 +1,81 @@
+.circle-out-enter-active,
+.circle-out-leave-active {
+  // transition: all 1s;
+  clip-path: circle(150% at 50% 50%);
+  pointer-events: none;
+
+  .enter button {
+    transition: border-color 0.5s;
+  }
+}
+/* .fade-leave-active below version 2.1.8 */
+.circle-out-enter,
+.circle-out-leave-to {
+  // clip-path: circle(150px at 50% calc(50% - var(--nav-height)/2));
+  animation: circle 2s;
+  @include until($tablet) {
+    animation: circle-mobile 2s;
+  };
+
+  .enter button {
+    border-color: black;
+    // color: black;
+  }
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: all 1s;
+}
+/* .fade-leave-active below version 2.1.8 */
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+}
+@keyframes circle {
+  0% {
+    clip-path: circle(150% at 50% 50%);
+    opacity: 1;
+    color: white;
+  }
+
+  50% {
+    opacity: 1;
+    color: black;
+    clip-path: circle(150px at 50% calc(50% - var(--nav-height)/2));
+  }
+
+  100% {
+    clip-path: circle(150px at 50% calc(50% - var(--nav-height)/2));
+    color: black;
+    opacity: 0;
+  }
+}
+@keyframes circle-mobile {
+  0% {
+    clip-path: circle(150% at 50% 50%);
+    opacity: 1;
+    color: white;
+  }
+
+  50% {
+    opacity: 1;
+    color: black;
+    clip-path: circle(75px at 50% calc(50% - var(--nav-height)/2));
+  }
+
+  100% {
+    clip-path: circle(75px at 50% calc(50% - var(--nav-height)/2));
+    color: black;
+    opacity: 0;
+  }
+}
+@keyframes rotate {
+  0% {
+    transform: rotateZ(0);
+  }
+
+  100% {
+    transform: rotateZ(360deg);
+  }
+}

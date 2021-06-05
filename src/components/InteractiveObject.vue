@@ -1,30 +1,20 @@
 <template>
-<div class="outer-flex">
+<div class="outer-flex" :style="loaded ? 'opacity:1': 'opacity:0'" @mouseenter="hoverAnyCanvas(true)" @mouseleave="hoverAnyCanvas(false)">
   <div ref="canvasArea" class="canvas-area">
     <div class="inner-flex">
       <div :id="'obj' + i + '-wrapper'" :ref="'obj' + i" class="flex-item cross" v-for="i in 4" v-show="anyOpen ? canvasObject['obj' + i].display : true">
         <div class="canvas-info">
-          <span>{{canvasObject['obj' + i].number}}</span>
+          <span class="hide-on-mobile">{{canvasObject['obj' + i].number}}</span>
           <span>{{canvasObject['obj' + i].name}}</span>
           <span class="fullscreen-button" v-if="canvasObject['obj' + i].display" @click="saveScreenshot('obj' + i)" @mouseenter="hoverInfo('obj' + i,'enter')" @mouseleave="hoverInfo('obj' + i,'leave')">Download Screenshot</span>
-          <span class="fullscreen-button" @click="openCanvas('obj' + i)">fullscreen</span>
+          <span class="fullscreen-button hide-on-mobile" @click="openCanvas('obj' + i)">{{anyOpen ? "exit fullscreen" : "fullscreen"}}</span>
+          <span class="fullscreen-button hide-on-desktop" @click="openCanvas('obj' + i)">{{"double tap to toggle fullscreen"}}</span>
         </div>
-        <canvas :id="'obj' + i" width="100%" height="100%"></canvas>
+        <canvas tabindex="0" @dblclick="openCanvas('obj' + i)" :id="'obj' + i" width="100%" height="100%"></canvas>
       </div>
     </div>
   </div>
-  <div class="navigation-area">
-    <div class="navigation-wrapper">
-      <div class="">
-        <h1>OBSESSED BY MOVEMENT</h1>
-      </div>
-      <div class="" style="flex-grow:1">
 
-      </div>
-      <AudioPlayer :file="music.src"></AudioPlayer>
-
-    </div>
-  </div>
 </div>
 </template>
 
@@ -33,11 +23,31 @@ import obj1 from './objects/obj1.js'
 import obj2 from './objects/obj2.js'
 import obj3 from './objects/obj3.js'
 import obj4 from './objects/obj4.js'
+
+// obj3.length = 1116
+// obj4.length = 1116
 const allObjects = [
   obj1, obj2, obj3, obj4
 ]
 
-import AudioPlayer from './AudioPlayer'
+if (window.innerWidth < 768) {
+
+  for (var i = 0; i < allObjects.length; i++) {
+    allObjects[i].length = 1020
+    console.log(allObjects[i].length, i, ' length');
+  }
+  const appHeight = () => {
+    setTimeout(() => {
+
+      const doc = document.documentElement
+      doc.style.setProperty('--app-height', `${window.innerHeight}px`)
+    }, 0)
+  }
+  window.addEventListener('resize', appHeight)
+  appHeight()
+}
+
+
 
 import anime from 'animejs/lib/anime.es.js';
 var debounce = require('lodash.debounce');
@@ -47,40 +57,42 @@ export default {
   name: 'InteractiveObject',
   data() {
     return {
-      music: {
-        src: require('@/assets/main.mp3')
-      },
+      // music: {
+      //   src: require('@/assets/main.mp3')
+      // },
+      loaded: false,
+      anyCanvasHovered: false,
       canvasObject: {
         obj1: {
           open: false,
           display: false,
           number: 'I',
-          name: 'Shape 10'
+          name: 'PRÉLUDE. Poco vivace'
         },
         obj2: {
           open: false,
           display: false,
           number: 'II',
-          name: 'Shape 15'
+          name: 'MALINCONIA. Poco lento'
         },
         obj3: {
           open: false,
           display: false,
           number: 'III',
-          name: 'Shape 20'
+          name: 'SARABANDE. "Danse des ombre." Lento'
         },
         obj4: {
           open: false,
           display: false,
           number: 'IV',
-          name: 'Shape 17'
+          name: 'LES FURIES. Allegro furiosa'
         },
       }
     }
   },
-  components: {
-    AudioPlayer
-  },
+  // components: {
+  //   AudioPlayer
+  // },
   computed: {
     anyOpen() {
       // return canvasObject.forEach((object) => )
@@ -88,6 +100,11 @@ export default {
     }
   },
   methods: {
+    hoverAnyCanvas(bool) {
+      if (!this.loaded) return
+      this.anyCanvasHovered = bool
+      this.$root.$emit('anyCanvasHovered', this.anyCanvasHovered)
+    },
     exlusiveBooleans(property, id) {
       Object.keys(this.canvasObject).forEach((obj) => {
         obj == id ?
@@ -97,41 +114,35 @@ export default {
     },
     saveScreenshot(id) {
       if (CABLES) {
+        setTimeout(() => {
+          CABLES[id].pause()
+          CABLES[id].config.saveScreenshot()
 
-        CABLES[id].config.saveScreenshot()
+        }, 300)
+        CABLES[id].resume()
       }
     },
     hoverInfo(id, direction) {
-      console.log(id, direction);
       if (direction == "enter") {
         CABLES[id].setVariable("forceHover", true);
-
       } else {
-        console.log(CABLES[id]);
         CABLES[id].setVariable("forceHover", false);
-
       }
       this.resizeCanvases()
     },
     openCanvas(canvasId) {
-
+      event.preventDefault()
+      event.stopPropagation();
       const canvas = document.querySelector('#' + canvasId)
       const parent = canvas.parentNode
 
       this.exlusiveBooleans('open', canvasId)
-      // Object.keys(this.canvasObject).forEach((obj) => {
-      //   obj == canvasId ?
-      //     (this.canvasObject[obj].open = !this.canvasObject[obj].open) :
-      //     (this.canvasObject[obj].open = false);
-      // });
 
       const refContainer = [this.$refs.obj1, this.$refs.obj2, this.$refs.obj3, this.$refs.obj4]
       const padding = 1 //3
       const navHeight = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--nav-height'))
       const height = this.$refs.canvasArea.getBoundingClientRect().height
 
-      //// TODO:  Add Padding to width/height calculations. + Fix "when fast toggling" canvas animation
-      //// TODO:  strange bug, if window.width < 768 canvas not reacting, GL context lost?!?! but only afte breakpoint?
 
       if (this.canvasObject[canvasId].open) {
         anime({
@@ -160,9 +171,9 @@ export default {
 
       } else {
 
-        this.$nextTick(() => {
-
-        })
+        // this.$nextTick(() => {
+        //
+        // })
         anime({
           targets: refContainer,
           opacity: 0,
@@ -193,7 +204,11 @@ export default {
 
 
       }
-
+      if (window.innerWidth < 768) {
+        console.log("mobile", event);
+        canvas.click()
+        canvas.focus()
+      }
     },
     resizeCanvases() {
       Object.keys(this.canvasObject).forEach((id) => {
@@ -209,6 +224,12 @@ export default {
   },
   mounted() {
     // console.log(Object.keys(this.canvasObject));
+    this.$root.$on('forceHoverAll', (payload) => {
+      Object.keys(this.canvasObject).forEach((id) => {
+        CABLES[id].setVariable("forceHover", payload);
+
+      })
+    })
 
     // disable rubberband effect on mobile devices
     // document.getElementById('glcanvas').addEventListener('touchmove', (e) => {
@@ -219,8 +240,21 @@ export default {
     function patchInitialized(patch) {
       // You can now access the patch object (patch), register variable watchers and so on
     }
-
+    let loading = 0
     const patchFinishedLoading = (id) => {
+      loading++
+      let loadingProgress = loading / allObjects.length
+      this.$root.$emit('loading', loadingProgress)
+      console.log(allObjects.length);
+      console.log(loading);
+      if (loading == allObjects.length) {
+        // if (id == 'obj4') {
+        this.$nextTick(() => {
+          console.log("loaded", id);
+          this.loaded = true
+          this.resizeCanvases()
+        })
+      }
       // this.$nextTick(() => {
       //
       //   const dimensions = document.querySelector('#' + id + '-wrapper').getBoundingClientRect()
@@ -233,7 +267,7 @@ export default {
     }
 
     document.addEventListener('CABLES.jsLoaded', (event) => {
-      for (var i = 0; i < 4; i++) {
+      for (var i = 0; i < allObjects.length; i++) {
         let arrayName = 'obj' + (i + 1)
         let object = allObjects[i]
 
@@ -264,35 +298,45 @@ export default {
 <style  lang="scss">
 $borderwidth: 1px;
 $borderstyle: $borderwidth solid white;
+$borderstyle-black: $borderwidth solid black;
 $nav-height: 64px;
 :root {
     --nav-height: #{$nav-height};
+    --app-height: 100vh;
 }
 
 .outer-flex {
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
-    max-height: 100vh;
-    @include fill-height-and-width;
+    // min-height: 100vh;
+    // max-height: 100vh;
+    // @include fill-height-and-width;
+    height: 100%;
+    max-height: calc(var(--app-height) - #{$nav-height});
     .canvas-area {
         flex: 1 100%;
         //background: pink;
-        min-height: calc(100vh - #{$nav-height});
-        max-height: calc(100vh - #{$nav-height});
+        min-height: calc(var(--app-height) - #{$nav-height});
+        max-height: calc(var(--app-height) - #{$nav-height});
         @include fill-height-and-width;
         .inner-flex {
             display: flex;
             flex-wrap: wrap;
+            overflow: hidden;
             height: 100%;
             justify-content: space-between;
-
+            // @include until($tablet) {
+            //     flex-flow: column;
+            // };
         }
         .flex-item {
             position: relative;
             flex: 0 50%;
             width: 50%;
             height: 50%;
+            // @include until($tablet) {
+            //     width: 100%;
+            // };
             //  background: purple;
             &:hover .canvas-info {
                 opacity: 1;
@@ -305,6 +349,7 @@ $nav-height: 64px;
             }
             &.open:after {
                 max-width: calc(100% - 1px);
+                visibility: hidden;
             }
             &:not(.open):nth-child(even):after {
                 max-width: calc(100% - 1px);
@@ -364,6 +409,9 @@ $nav-height: 64px;
                 left: 0;
                 width: 10px;
                 height: 10px;
+                @include until($tablet) {
+                    content: none !important;
+                };
             }
             &:not(.open).cross:after {
                 overflow: hidden;
@@ -377,6 +425,7 @@ $nav-height: 64px;
                 width: 150px;
                 height: 150px;
                 transition: all 1s ease;
+
             }
             &:not(.open).cross:hover:after {
                 width: 100%;
@@ -405,40 +454,58 @@ $nav-height: 64px;
                 // background-clip: padding-box;
                 pointer-events: none;
                 display: block;
-                background: transparent;
+                background: rgba(0,0,0,0);
+                z-index: 10;
                 position: absolute;
                 width: 150px;
                 height: 150px;
                 transition: all 1s ease;
+                @include until($tablet) {
+                    width: 75px;
+                    height: 75px;
+                };
             }
             &:not(.open).cross:nth-child(1):before {
                 bottom: 0;
                 right: 0;
-                border-radius: 100% 0 0 0;
-                border-right: none;
-                border-bottom: none;
+                border-radius: 100% 1% 0 0;
+                border-right: $borderstyle-black;
+                border-bottom: $borderstyle-black;
+                @include until($tablet) {
+                    border-right: none;
+                    border-bottom: none;
+                };
             }
             &:not(.open).cross:nth-child(2):before {
-                border-left: none;
-                border-bottom: none;
-
+                border-left: $borderstyle-black;
+                border-bottom: $borderstyle-black;
                 bottom: 0;
                 left: 0;
-                border-radius: 0 100% 0 0;
-
+                border-radius: 0 100% 1% 0;
+                @include until($tablet) {
+                    border-left: none;
+                    border-bottom: none;
+                };
             }
             &:not(.open).cross:nth-child(3):before {
-                border-right: none;
-                border-top: none;
+                border-right: $borderstyle-black;
+                border-top: $borderstyle-black;
                 top: 0;
                 right: 0;
-                border-radius: 0 0 0 100%;
+                border-radius: 0 0 1% 100%;
+                @include until($tablet) {
+                    border-right: none;
+                    border-top: none;
+                };
             }
             &:not(.open).cross:nth-child(4):before {
-                border-left: none;
-                border-top: none;
-                border-radius: 0 0 100% 0;
-
+                border-left: $borderstyle-black;
+                border-top: $borderstyle-black;
+                border-radius: 0 0 100% 1%;
+                @include until($tablet) {
+                    border-left: none;
+                    border-top: none;
+                };
             }
             @for $i from 1 through 4 {
                 &:not(.open).cross:nth-child(#{$i}):hover:before {
@@ -446,20 +513,10 @@ $nav-height: 64px;
                     // border: 2px black solid;
                 }
             }
+            &:not(.open) canvas {
+                max-height: 50vh;
 
-        }
-    }
-    .navigation-area {
-        //  background-color: green;
-        width: 100%;
-        height: $nav-height;
-        min-height: $nav-height;
-        border-top: $borderstyle;
-        .navigation-wrapper {
-            height: 100%;
-            display: flex;
-            flex-direction: row;
-            align-items: center;
+            }
         }
     }
 
@@ -471,16 +528,28 @@ $nav-height: 64px;
     color: white;
     width: 100%;
     pointer-events: none;
+    overflow: hidden;
     justify-content: space-between;
     display: flex;
     padding: 1rem;
     opacity: 0;
     transition: 1s opacity ease;
     line-height: 1;
+    @include until($tablet) {
+        padding: 0.5rem;
+        font-size: 0.5rem;
+    };
 }
 .fullscreen-button {
     pointer-events: all;
     cursor: pointer;
+    padding-bottom: 0.25em;
+    transition: border-bottom 0.375s ease;
+    border-bottom: black solid 1px;
+    &:hover {
+        border-bottom: white solid 1px;
+
+    }
 }
 
 canvas {

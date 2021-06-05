@@ -1,3 +1,5 @@
+@import "./mixins.scss";
+
 .pointer-events-all {
   pointer-events: all;
 }
@@ -9,6 +11,18 @@
 .v-hide {
   pointer-events: none;
   opacity: 0;
+}
+
+.hide-on-mobile {
+  @include until($tablet) {
+    display: none;
+  };
+}
+
+.hide-on-desktop {
+  @include from($tablet) {
+    display: none;
+  };
 }
 
 .center-all {
@@ -26,13 +40,31 @@
 }
 
 .flex-center-h {
-  justify-content: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .center-vertical {
   display: flex;
   flex-direction: column;
   justify-content: center;
+}
+
+.relative {
+  position: relative;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+/* Hide scrollbar for IE, Edge and Firefox */
+
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
 }
 
 [style*="--aspect-ratio"] > :first-child {

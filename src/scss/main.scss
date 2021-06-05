@@ -4,6 +4,7 @@
 @import "./mixins.scss";
 @import "./util.scss";
 @import "./columns.scss";
+@import "./animations.scss";
 
 a {
   color: $color-link;
@@ -18,10 +19,36 @@ a:hover {
   color: $color-link-hover;
 }
 
+* {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
 body,
 html {
   background: black;
   font-family: $font-primary;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  @media not all and (hover:hover) {
+    height: var(--app-height);
+  }
+}
+
+body {
+  min-height: 100vh;
+  /* mobile viewport bug fix */
+  min-height: -webkit-fill-available;
+  overflow: hidden;
+}
+
+html {
+  height: -webkit-fill-available;
 }
 
 canvas {}
