@@ -125,8 +125,10 @@ export default {
     hoverInfo(id, direction) {
       if (direction == "enter") {
         CABLES[id].setVariable("forceHover", true);
+        CABLES[id].resume()
       } else {
         CABLES[id].setVariable("forceHover", false);
+        CABLES[id].pause()
       }
       this.resizeCanvases()
     },
