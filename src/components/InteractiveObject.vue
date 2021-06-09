@@ -123,13 +123,13 @@ export default {
       }
     },
     hoverInfo(id, direction) {
+
       if (direction == "enter") {
         CABLES[id].setVariable("forceHover", true);
-        CABLES[id].resume()
       } else {
         CABLES[id].setVariable("forceHover", false);
-        CABLES[id].pause()
       }
+      if (!CABLES[id].isPlaying()) CABLES[id].resume()
       this.resizeCanvases()
     },
     openCanvas(canvasId) {
