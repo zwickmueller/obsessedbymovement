@@ -52,7 +52,8 @@ import Credits from './Credits.vue'
 export default {
   data() {
     return {
-      showInfo: false
+      showInfo: false,
+      isMusicPlaying: false
     }
   },
   components: {
@@ -65,9 +66,12 @@ export default {
 
   },
   mounted() {
+    this.$root.$on('isMusicPlaying', (isMusicPlaying) => {
+      this.isMusicPlaying = isMusicPlaying
+    })
     this.$root.$on('showInfo', () => {
       this.showInfo = !this.showInfo
-      this.$root.$emit('forceHoverAll', this.showInfo)
+      if (!this.isMusicPlaying) this.$root.$emit('forceHoverAll', this.showInfo)
     })
   }
 }
