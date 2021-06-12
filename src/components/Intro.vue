@@ -4,7 +4,7 @@
     <div class="intro flex-center-h">
       <div class="intro-text">
 
-        <p><span>OBSESSED BY MOVEMENT</span> <br />Manifestations of musical ephemerality based on the interdisciplinary work of Hannah Bohnen</p>
+        <p><span class="title">OBSESSED BY MOVEMENT</span> Manifestations of musical ephemerality based on the interdisciplinary work of Hannah Bohnen</p>
         <!-- <p>{{loadingProgress}}</p> -->
       </div>
 
@@ -65,12 +65,17 @@ export default {
 
         font-family: 'Monument Grotesk';
     }
+    span.title {
+        padding-bottom: 1rem;
+        font-size: 2rem;
+        display: block;
+    }
 }
 .intro {
     line-height: 1.25;
     max-width: 450px;
     text-align: center;
-    font-size: 2rem;
+    font-size: 1.5rem;
     @include until($tablet) {
         font-size: 1.2rem;
     }
@@ -92,7 +97,7 @@ export default {
     }
 }
 .enter button {
-    font-size: 2rem;
+    font-size: 1.5rem;
     border: 2px solid white;
     padding: 0.1em 1em 0.05em;
     transition: all 0.3s ease;

@@ -14,13 +14,19 @@
         <div class="title">
 
           <h1>OBSESSION</h1>
-          <h2>Transmediation einer Musik</h2>
+          <p>Transmediation of Music</p>
         </div>
         <Credits class="credits-desktop"></Credits>
       </div>
       <div class="right ">
 
         <div class="text">
+          <div class="in-text-image">
+            <figure>
+
+              <img :src="require('@/assets/1-min.jpg')" alt="Hannah Bohnen - Obsession">
+            </figure>
+          </div>
 
           <p>The violin is heard in all its virtuosity in the four movements of the second solo sonata OBSESSION by the Belgian composer Eugène Ysaÿe. The pieces are known for the masterful expressionistic violin sound and high technical demands.
             Played
@@ -36,6 +42,19 @@
           <p>In the process of transmediation, it materializes into lines of movement and acquires a physicality. Via the reflection of the varnish, the mirror image of the space appears on the panels. Their surface
             texture changes and with every movement of the viewer the mirrored environment deforms anew. The panels visualize the violin playing and place it in relation to its surroundings. This results in an immediate interaction between space and
             time. The faded music is confronted with the present reflection and creates an anachronistic moment. Temporality calls itself into consciousness on the surface of the panels and can be experienced there.</p>
+          <div class="columns gallery">
+            <div class="column">
+
+              <!-- <img :src="require('@/assets/1-min.jpg')" alt="Hannah Bohnen - Obsession"> -->
+              <img :src="require('@/assets/3-min_Custom.jpg')" alt="Hannah Bohnen - Obsession">
+            </div>
+            <div class="column">
+
+              <img :src="require('@/assets/2-min.jpg')" alt="Hannah Bohnen - Obsession">
+            </div>
+
+          </div>
+
         </div>
       </div>
       <Credits class="credits-mobile"></Credits>
@@ -88,6 +107,43 @@ $margin: 1em;
     @include until($tablet) {
         display: none;
     };
+}
+
+.in-text-image {
+    float: left;
+    width: 35%;
+    // padding: 1rem;
+    @include until($tablet) {
+        width: 100%;
+        padding-bottom: 1em;
+    };
+    //the following is using scss
+    //to achieve: .in-text-image img { }
+    img {
+        width: 100%;
+        height: auto;
+    }
+}
+.gallery {
+    padding: 0 0 2em;
+    @include until($tablet) {
+        flex-direction: column;
+        padding-bottom: 1em;
+    };
+    img:first-child {
+        @include until($tablet) {
+
+            padding-bottom: 1em;
+        };
+    }
+}
+figure {
+    margin-block-start: 0;
+    margin-block-end: 0;
+    margin-inline-start: 0;
+    margin-inline-end: 0;
+    margin-top: 0.6rem;
+    margin-right: 1rem;
 }
 .close {
     position: absolute;
@@ -150,8 +206,13 @@ $margin: 1em;
         height: calc(var(--app-height) - var(--nav-height) - (2*#{$margin}) - 24px);
     };
     .title {
+        h1 {
 
-        font-size: 2rem;
+            font-size: 5rem;
+            @include until($tablet) {
+                font-size: 2rem;
+            };
+        }
         line-height: 1;
         flex: 1;
         @include until($tablet) {
@@ -163,7 +224,7 @@ $margin: 1em;
         font-size: small;
     }
     .text {
-        font-size: 1.3rem;
+        font-size: 1rem;
         letter-spacing: -0.1px;
         line-height: 1.4;
     }

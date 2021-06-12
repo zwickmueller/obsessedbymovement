@@ -24,8 +24,6 @@ import obj2 from './objects/obj2.js'
 import obj3 from './objects/obj3.js'
 import obj4 from './objects/obj4.js'
 
-// obj3.length = 1116
-// obj4.length = 1116
 const allObjects = [
   obj1, obj2, obj3, obj4
 ]
@@ -34,11 +32,10 @@ if (window.innerWidth < 768) {
 
   for (var i = 0; i < allObjects.length; i++) {
     allObjects[i].length = 1020
-    console.log(allObjects[i].length, i, ' length');
   }
+
   const appHeight = () => {
     setTimeout(() => {
-
       const doc = document.documentElement
       doc.style.setProperty('--app-height', `${window.innerHeight}px`)
     }, 0)
@@ -57,9 +54,6 @@ export default {
   name: 'InteractiveObject',
   data() {
     return {
-      // music: {
-      //   src: require('@/assets/main.mp3')
-      // },
       loaded: false,
       anyCanvasHovered: false,
       canvasObject: {
@@ -90,12 +84,9 @@ export default {
       }
     }
   },
-  // components: {
-  //   AudioPlayer
-  // },
+
   computed: {
     anyOpen() {
-      // return canvasObject.forEach((object) => )
       return Object.values(this.canvasObject).map(obj => obj.display).some(bool => bool == true)
     }
   },
@@ -153,7 +144,6 @@ export default {
           duration: 400,
           easing: 'linear',
           complete: (anim) => {
-
             anime({
               targets: refContainer,
               opacity: 1,
@@ -161,21 +151,14 @@ export default {
               easing: 'linear',
               begin: (anim) => {
                 this.exlusiveBooleans('display', canvasId)
-                console.log(this.$refs.canvasArea.getBoundingClientRect().height);
                 parent.classList.add('open')
                 CABLES[canvasId].cgl.setSize(window.innerWidth, height)
-
               }
             });
-
           }
         });
 
       } else {
-
-        // this.$nextTick(() => {
-        //
-        // })
         anime({
           targets: refContainer,
           opacity: 0,
@@ -190,9 +173,8 @@ export default {
               begin: (anim) => {
                 this.exlusiveBooleans('display', canvasId)
                 parent.classList.remove('open')
-                let width = parent.getBoundingClientRect().width // - (padding * 1)
-                let height = parent.getBoundingClientRect().height // - (padding * 1)
-                console.log(width, height);
+                let width = parent.getBoundingClientRect().width
+                let height = parent.getBoundingClientRect().height
                 CABLES[canvasId].cgl.setSize(width, height)
               },
               complete: () => {
@@ -207,65 +189,42 @@ export default {
 
       }
       if (window.innerWidth < 768) {
-        console.log("mobile", event);
         canvas.click()
         canvas.focus()
       }
     },
     resizeCanvases() {
       Object.keys(this.canvasObject).forEach((id) => {
-
         const dimensions = document.querySelector('#' + id + '-wrapper').getBoundingClientRect()
-
-        let width = dimensions.width // - (padding * 1)
-        let height = dimensions.height // - (padding * 1)
-        console.log(width, height);
+        let width = dimensions.width
+        let height = dimensions.height
         CABLES[id].cgl.setSize(Math.ceil(width), Math.floor(height))
       })
     }
   },
   mounted() {
-    // console.log(Object.keys(this.canvasObject));
     this.$root.$on('forceHoverAll', (payload) => {
       Object.keys(this.canvasObject).forEach((id) => {
         CABLES[id].setVariable("forceHover", payload);
-
       })
     })
 
-    // disable rubberband effect on mobile devices
-    // document.getElementById('glcanvas').addEventListener('touchmove', (e) => {
-    //   e.preventDefault();
-    // }, false);
     window.addEventListener('resize', debounce(this.resizeCanvases, 100))
 
-    function patchInitialized(patch) {
-      // You can now access the patch object (patch), register variable watchers and so on
-    }
+    function patchInitialized(patch) {}
+
     let loading = 0
     const patchFinishedLoading = (id) => {
       loading++
       let loadingProgress = loading / allObjects.length
       this.$root.$emit('loading', loadingProgress)
-      console.log(allObjects.length);
-      console.log(loading);
+
       if (loading == allObjects.length) {
-        // if (id == 'obj4') {
         this.$nextTick(() => {
-          console.log("loaded", id);
           this.loaded = true
           this.resizeCanvases()
         })
       }
-      // this.$nextTick(() => {
-      //
-      //   const dimensions = document.querySelector('#' + id + '-wrapper').getBoundingClientRect()
-      //   let width = dimensions.width // - (padding * 1)
-      //   let height = dimensions.height // - (padding * 1)
-      //   console.log(width, height);
-      //   CABLES[id].cgl.setSize(width, height)
-      // })
-      //CABLES[id].off('resize')
     }
 
     document.addEventListener('CABLES.jsLoaded', (event) => {
@@ -284,10 +243,6 @@ export default {
           variables: {
             objectArray: object
           },
-          // canvas: {
-          //   alpha: true,
-          //   premultipliedAlpha: true
-          // }
         });
 
       }
@@ -297,7 +252,7 @@ export default {
 }
 </script>
 
-<style  lang="scss">
+<style lang="scss">
 $borderwidth: 1px;
 $borderstyle: $borderwidth solid white;
 $borderstyle-black: $borderwidth solid black;

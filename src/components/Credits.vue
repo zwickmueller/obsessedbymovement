@@ -32,7 +32,7 @@
         href="https://abcdinamo.com/" target="_blank">Dinamo Fonts</a>
       for sponsoring the Monument Grotesk Webfont. <br /><br> ©
       2021,
-      All rights reserved. Bohnen, Philipp Bohnen.</p>
+      All rights reserved. Hannah Bohnen, Philipp Bohnen.</p>
   </div>
 </template>
 
